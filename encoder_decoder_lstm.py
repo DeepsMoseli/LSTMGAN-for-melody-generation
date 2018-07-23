@@ -32,7 +32,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 #######################model params####################################
 batch_size = 2
 num_classes = 1
-epochs = 300
+epochs = 150
 hidden_units = 129
 learning_rate = 0.002
 clip_norm = 2.0
@@ -93,7 +93,7 @@ def encoder_decoder():
     print(model.summary())
     
     #rmsprop = RMSprop(lr=learning_rate,clipnorm=clip_norm)
-    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    model.compile(loss='mse',optimizer='adam',metrics=['mse'])
     #model.compile(loss='categorical_crossentropy',optimizer=rmsprop,metrics=['accuracy'])
     
     x_train,x_test,y_train,y_test=tts(x,y,test_size=0.2)
@@ -153,6 +153,10 @@ def generateSong(sample):
 trained_model,encoder,decoder,history = encoder_decoder()
 
 """___________________________________Sample___________________________________________"""
+
+
+sample_song = np.reshape(generateSong(x[0]),y[0].shape)
+
 
 def getNotes(indeX):
     pp=y[indeX]
