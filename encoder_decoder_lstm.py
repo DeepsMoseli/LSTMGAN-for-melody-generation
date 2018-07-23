@@ -30,18 +30,18 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 
 """________________________________________________________________________________"""
 #######################model params####################################
-batch_size = 25
+batch_size = 2
 num_classes = 1
-epochs = 100
-hidden_units = 400
-learning_rate = 0.0001
+epochs = 300
+hidden_units = 129
+learning_rate = 0.002
 clip_norm = 2.0
 
 #######################################################################
 ############################Helper Functions###########################
 #######################################################################    
 
-x,y = getPairsforencodeco(dataset2,500)
+x,y = getPairsforencodeco(dataset2,300)
 
 pickleFicle(x,y,"notesOnly_128_263nvar")
 
@@ -65,11 +65,11 @@ def encoder_decoder():
     encoder_inputs = Input(shape=en_shape)
     
     encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.2,
-                        dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='zeros',return_state=True)
+                        dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
     encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.2,
-                         dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='zeros',return_state=True)
+                         dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
     encoder_LSTM3 = LSTM(hidden_units,return_sequences=True,
-                         recurrent_initializer='zeros', bias_initializer='zeros',return_state=True)
+                         recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
     
     encoder_outputs,_,_ = encoder_LSTM(encoder_inputs)
     encoder_outputs,_,_ = encoder_LSTM2(encoder_outputs)
@@ -81,9 +81,10 @@ def encoder_decoder():
     """____decoder___"""
     decoder_inputs = Input(shape=(None,de_shape[1]))
     decoder_LSTM = LSTM(hidden_units,dropout_U=0.2,dropout_W=0.2,return_sequences=True,
-                        recurrent_initializer='zeros',bias_initializer='zeros',return_state=True)
+                        recurrent_initializer='zeros',bias_initializer='ones',return_state=True)
     decoder_outputs, _, _ = decoder_LSTM(decoder_inputs,initial_state=encoder_states)
     
+     
     decoder_dense = Dense(de_shape[1],activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)
     
@@ -91,9 +92,9 @@ def encoder_decoder():
     model= Model(inputs=[encoder_inputs,decoder_inputs], outputs=decoder_outputs)
     print(model.summary())
     
-    rmsprop = RMSprop(lr=learning_rate,clipnorm=clip_norm)
-    #model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
-    model.compile(loss='categorical_crossentropy',optimizer=rmsprop,metrics=['accuracy'])
+    #rmsprop = RMSprop(lr=learning_rate,clipnorm=clip_norm)
+    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    #model.compile(loss='categorical_crossentropy',optimizer=rmsprop,metrics=['accuracy'])
     
     x_train,x_test,y_train,y_test=tts(x,y,test_size=0.2)
     history= model.fit(x=[x_train,y_train],

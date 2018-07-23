@@ -229,12 +229,12 @@ def embedding(song,mode):
             """----only note info----"""
             #song=song[['velocity']]
             #song=song[['note','channel', 'type', 'velocity']]
-            song=song[['note']]
+            song=song[['note','type']]
             song=song[song['note']!='none']
             
             """---binarize note_type---"""
-            #song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
-            #del song['type']
+            song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
+            del song['type']
             
             """---one hot encoding ---"""
             song = dummies(song,'note',128)
@@ -380,7 +380,7 @@ dataset = build_dataset("notes")
 dataset2 = ToNdArray(dataset,1000)
 
 
-dataset2[0][:10]
+y=dataset2[5]
 
 x_data,y_data=TrainingPairs(dataset2,np.shape(dataset2[0])[2])
 """-----------------------------------------------------------------------"""
