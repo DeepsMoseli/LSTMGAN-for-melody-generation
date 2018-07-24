@@ -32,9 +32,9 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 #######################model params####################################
 batch_size = 2
 num_classes = 1
-epochs = 150
-hidden_units = 129
-learning_rate = 0.002
+epochs = 280
+hidden_units = 130
+learning_rate = 0.0001
 clip_norm = 2.0
 
 #######################################################################
@@ -155,7 +155,7 @@ trained_model,encoder,decoder,history = encoder_decoder()
 """___________________________________Sample___________________________________________"""
 
 
-sample_song = np.reshape(generateSong(x[0]),y[0].shape)
+sample_song = np.reshape(generateSong(x[2]),y[2].shape)
 
 
 def getNotes(indeX):
