@@ -43,12 +43,15 @@ clip_norm = 2.0
 
 x,y = getPairsforencodeco(dataset2,300)
 
-pickleFicle(x,y,"notesOnly_128_263nvar")
+pickleFicle(x,y,"notesOnly_7var")
+pickleFicle(x,y,"onoff_7var")
 
 #######################if loaded from pickle###########################
-data = loadPickle("notes_273var_17_7_2018")   
-x= data['x'][:200]
-y= data['y'][:200]
+dataNotes = loadPickle("notesOnly_7var_26_7_2018")   
+dataType = loadPickle("onoff_7var_26_7_2018") 
+
+x= dataNotes['x']
+y= dataNotes['y']
 
 #######################################################################
 

@@ -229,16 +229,17 @@ def embedding(song,mode):
             """----only note info----"""
             #song=song[['velocity']]
             #song=song[['note','channel', 'type', 'velocity']]
-            song=song[['note','type']]
+            song=song[['type','note']]
             song=song[song['note']!='none']
+            song=song[['type']]
             
             """---binarize note_type---"""
-            #song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
-            #del song['type']
+            song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
+            del song['type']
             
             """---one hot encoding ---"""
-            song = dummies(song,'type',2)
-            song = dummies(song,'note',128)
+            song = dummies(song,'note_on',2)
+            #song = dummies(song,'note',128)
             #song = dummies(song,'velocity',128)
             return song
         
@@ -357,20 +358,24 @@ def loadPickle(fileName):
 def plot_training(history):
     print(history.history.keys())
     #  "Accuracy"
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    #plt.plot(history.history['acc'])
+    plt.plot(history.history['val_note_outputs_categorical_accuracy'])
+    plt.plot(history.history['val_type_outputs_categorical_accuracy'])
+    plt.plot(history.history['val_velocity_outputs_categorical_accuracy'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
-    plt.legend(['train', 'validation'], loc='upper left')
+    plt.legend(['Note', 'Type','Velocity'], loc='upper left')
     plt.show()
     # "Loss"
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
+    #plt.plot(history.history['loss'])
+    plt.plot(history.history['val_note_outputs_loss'])
+    plt.plot(history.history['val_type_outputs_loss'])
+    plt.plot(history.history['val_velocity_outputs_loss'])
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'validation'], loc='upper left')
+    plt.legend(['Note', 'Type','Velocity'], loc='upper left')
     plt.show()
 
 
