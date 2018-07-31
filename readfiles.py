@@ -229,17 +229,17 @@ def embedding(song,mode):
             """----only note info----"""
             #song=song[['velocity']]
             #song=song[['note','channel', 'type', 'velocity']]
-            song=song[['type','note']]
+            song=song[['type','note','time','velocity']]
             song=song[song['note']!='none']
-            song=song[['type']]
+            song=song[['note']]
             
             """---binarize note_type---"""
-            song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
-            del song['type']
+            #song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
+            #del song['type']
             
             """---one hot encoding ---"""
-            song = dummies(song,'note_on',2)
-            #song = dummies(song,'note',128)
+            #song = dummies(song,'note_on',2)
+            song = dummies(song,'note',128)
             #song = dummies(song,'velocity',128)
             return song
         
@@ -255,14 +255,9 @@ def embedding(song,mode):
             return song
         
         elif mode == 'continuous':
-            song=song[['time','channel', 'note', 'type', 'velocity']]
+            song=song[['time','channel', 'note']]
             song=song[song['note']!='none']
-            #song=song[song['channel']==1]
-            
-            """---binarize note_type---"""
-            song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
-            del song['type']
-            
+            song=song[song['time','note']]
             return song
             
         else:
@@ -283,6 +278,7 @@ def build_dataset(mode):
         data = CreateAttributes(ChannelTracks)
         completesong = CombineNotes(data)
         completesong = embedding(completesong,mode)
+        print(type(completesong))
         if type(completesong)!=str:
             dataset.append(completesong)
     print("Dataset build with %s songs"%len(dataset))
@@ -359,9 +355,9 @@ def plot_training(history):
     print(history.history.keys())
     #  "Accuracy"
     #plt.plot(history.history['acc'])
-    plt.plot(history.history['val_note_outputs_categorical_accuracy'])
-    plt.plot(history.history['val_type_outputs_categorical_accuracy'])
-    plt.plot(history.history['val_velocity_outputs_categorical_accuracy'])
+    plt.plot(history.history['val_note_outputs_acc'])
+    plt.plot(history.history['val_type_outputs_acc'])
+    plt.plot(history.history['val_velocity_outputs_acc'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
