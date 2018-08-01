@@ -30,12 +30,12 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 
 """-------------------------------------------------------------------------"""
 #######################model params####################################
-batch_size = 4
+batch_size = 15
 num_classes = 1
-epochs = 20
+epochs = 250
 dropout=0.2
 hidden_units = 128
-learning_rate = 0.04
+learning_rate = 0.0005
 clip_norm = 2.0
 ########################################################################
 """--------------------------------------------------------------------------"""
@@ -355,4 +355,4 @@ def composeSong(index):
 model,AllModels,history = encoder_decoder()
 history.history.keys()
 plot_training(history)
-composeSong(30)    
+composeSong(10)    
