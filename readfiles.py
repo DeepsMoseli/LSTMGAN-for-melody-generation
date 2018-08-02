@@ -229,9 +229,9 @@ def embedding(song,mode):
             """----only note info----"""
             #song=song[['velocity']]
             #song=song[['note','channel', 'type', 'velocity']]
-            song=song[['type','note','time','velocity']]
+            song=song[['type','note','time','velocity','channel']]
             song=song[song['note']!='none']
-            song=song[['time']]
+            song=song[['channel']]
             
             """---binarize note_type---"""
             #song['note_on']=list(map(lambda x: 1 if x=='note_on' else 0,song['type']))
@@ -241,6 +241,7 @@ def embedding(song,mode):
             #song = dummies(song,'note_on',2)
             #song = dummies(song,'note',128)
             #song = dummies(song,'velocity',128)
+            song = dummies(song,'channel',16)
             return song
         
         elif mode == "all":
