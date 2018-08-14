@@ -30,12 +30,12 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 
 """-------------------------------------------------------------------------"""
 #######################model params####################################
-batch_size = 20
+batch_size = 1
 num_classes = 1
-epochs = 40
+epochs = 200
 dropout=0.1
 hidden_units = 128
-learning_rate = 0.0001
+learning_rate = 0.001
 clip_norm = 2.0
 ########################################################################
 """--------------------------------------------------------------------------"""
@@ -54,11 +54,11 @@ pickleFicle(x,y,"time")
 pickleFicle(x,y,"channel")
 
 #######################if loaded from pickle###########################
-dataNotes = loadPickle("notes_31_7_2018")   
-dataType = loadPickle("msgtype_31_7_2018") 
-dataVelocity = loadPickle("velocity_31_7_2018") 
-dataTime = loadPickle("time_31_7_2018") 
-dataChannel = loadPickle("channel_2_8_2018")
+dataNotes = loadPickle("notes_14_8_2018")   
+dataType = loadPickle("msgtype_14_8_2018") 
+dataVelocity = loadPickle("velocity_14_8_2018") 
+dataTime = loadPickle("time_14_8_2018") 
+dataChannel = loadPickle("channel_14_8_2018")
 
 Note_en_shape=np.shape(dataNotes['x'][0])
 Note_de_shape=np.shape(dataNotes['y'][0])
@@ -394,13 +394,15 @@ def composeSong(index):
     
     completesong={}
     completesong['notes']=list(getNotes(sample_song_Notes))
-    completesong['velocity']=list(getNotes(sample_song_Velocity))
-    completesong['type']=list(map(lambda x:'note_on' if x==0 else 'note_off', getNotes(sample_song_Type)))
-    completesong['time'] = list(map(int,sample_song_Time))
+    #completesong['velocity']=list(getNotes(sample_song_Velocity))
+    completesong['velocity']=list(getNotes(k) for k in dataVelocity['y'][index])
+    completesong['type']=list(map(lambda x:'note_on' if x>0 else 'note_off', getNotes(sample_song_Type)))
+    #completesong['time'] = list(map(int,sample_song_Time))
+    completesong['time']=list(int(k) for k in dataTime['y'][index])
     completesong['channel']=list(getNotes(sample_song_Channel))
     
-    mid = MidiFile(type=0)
-    mid.ticks_per_beat=60
+    mid = MidiFile(type=1)
+    mid.ticks_per_beat=120
     mid = MidiFile()
     track = MidiTrack()
     mid.tracks.append(track)    
@@ -418,4 +420,5 @@ def composeSong(index):
 model,AllModels,history = encoder_decoder()
 history.history.keys()
 plot_training(history)
-song=composeSong(55)    
+song=composeSong(0)    
+song['time']=list(int(k) for k in dataTime['y'][index])
