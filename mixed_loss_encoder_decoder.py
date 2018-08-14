@@ -30,12 +30,12 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',\
 
 """-------------------------------------------------------------------------"""
 #######################model params####################################
-batch_size = 10
+batch_size = 20
 num_classes = 1
-epochs = 30
+epochs = 40
 dropout=0.1
 hidden_units = 128
-learning_rate = 0.0005
+learning_rate = 0.0001
 clip_norm = 2.0
 ########################################################################
 """--------------------------------------------------------------------------"""
@@ -94,10 +94,10 @@ def encoder_decoder():
    
     """___Note__encoder___"""
     Note_encoder_inputs = Input(shape=Note_en_shape)
-    Note_encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.1,
-                        dropout_W=0.1,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
-    Note_encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.1,
-                         dropout_W=0.1,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
+    Note_encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.2,
+                        dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
+    Note_encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.2,
+                         dropout_W=0.2,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
     Note_encoder_outputs,_,_ = Note_encoder_LSTM(Note_encoder_inputs)
     Note_encoder_outputs,Note_state_h,Note_state_c = Note_encoder_LSTM2(Note_encoder_outputs)
     Note_encoder_states = [Note_state_h, Note_state_c]
@@ -105,9 +105,9 @@ def encoder_decoder():
     """___type__encoder___"""
     Type_encoder_inputs = Input(shape=Type_en_shape)
     Type_encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.1,
-                        dropout_W=0.1,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
+                        dropout_W=0.1,recurrent_initializer='normal', bias_initializer='ones',return_state=True)
     Type_encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.1,
-                        dropout_W=0.1,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
+                        dropout_W=0.1,recurrent_initializer='normal', bias_initializer='ones',return_state=True)
     Type_encoder_outputs,_,_ = Type_encoder_LSTM(Type_encoder_inputs)
     Type_encoder_outputs,Type_state_h,Type_state_c = Type_encoder_LSTM2(Type_encoder_outputs)
     Type_encoder_states = [Type_state_h, Type_state_c]
@@ -125,10 +125,10 @@ def encoder_decoder():
     
     """___Time__encoder___"""
     Time_encoder_inputs = Input(shape=Time_en_shape)
-    Time_encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.5,
-                        dropout_W=0.5,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
-    Time_encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.5,
-                        dropout_W=0.5,recurrent_initializer='zeros', bias_initializer='ones',return_state=True)
+    Time_encoder_LSTM = LSTM(hidden_units,return_sequences=True,dropout_U=0.05,
+                        dropout_W=0.05,recurrent_initializer='normal', bias_initializer='ones',return_state=True)
+    Time_encoder_LSTM2 = LSTM(hidden_units,return_sequences=True,dropout_U=0.05,
+                        dropout_W=0.05,recurrent_initializer='normal', bias_initializer='ones',return_state=True)
     Time_encoder_outputs,_, _ = Time_encoder_LSTM(Time_encoder_inputs)
     Time_encoder_outputs,Time_state_h,Time_state_c = Time_encoder_LSTM2(Time_encoder_outputs)
     Time_encoder_states = [Time_state_h, Time_state_c]
@@ -161,9 +161,9 @@ def encoder_decoder():
     """___Type__decoder___"""
     Type_decoder_inputs = Input(shape=(None,Type_de_shape[1]))
     Type_decoder_LSTM = LSTM(hidden_units,dropout_U=0.2,dropout_W=0.2,return_sequences=True,
-                        recurrent_initializer='zeros',bias_initializer='ones',return_state=True)
+                        recurrent_initializer='normal',bias_initializer='ones',return_state=True)
     Type_decoder_LSTM2 = LSTM(hidden_units,dropout_U=0.2,dropout_W=0.2,return_sequences=True,
-                        recurrent_initializer='zeros',bias_initializer='ones',return_state=True)
+                        recurrent_initializer='normal',bias_initializer='ones',return_state=True)
     Type_decoder_outputs, _, _ = Type_decoder_LSTM(Type_decoder_inputs,initial_state=Type_encoder_states)
     #Note_Type_decoder_outputs = Add()([Type_decoder_outputs,Note_decoder_outputs])
     Type_decoder_outputs, _, _ = Type_decoder_LSTM2(Type_decoder_outputs)
@@ -186,10 +186,10 @@ def encoder_decoder():
     
     """___Time__decoder___"""
     Time_decoder_inputs = Input(shape=(None,Time_de_shape[1]))
-    Time_decoder_LSTM = LSTM(hidden_units,dropout_U=0.2,dropout_W=0.2,return_sequences=True,
-                        recurrent_initializer='zeros',bias_initializer='ones',return_state=True)
-    Time_decoder_LSTM2 = LSTM(hidden_units,dropout_U=0.2,dropout_W=0.2,return_sequences=True,
-                        recurrent_initializer='zeros',bias_initializer='ones',return_state=True)
+    Time_decoder_LSTM = LSTM(hidden_units,dropout_U=0.05,dropout_W=0.05,return_sequences=True,
+                        recurrent_initializer='normal',bias_initializer='ones',return_state=True)
+    Time_decoder_LSTM2 = LSTM(hidden_units,dropout_U=0.05,dropout_W=0.05,return_sequences=True,
+                        recurrent_initializer='normal',bias_initializer='ones',return_state=True)
     Time_decoder_outputs, _, _ = Time_decoder_LSTM(Time_decoder_inputs,initial_state=Time_encoder_states)
     #Note_velo_decoder_outputs = Add()([Time_decoder_outputs,Note_decoder_outputs])
     Time_decoder_outputs, _, _ = Time_decoder_LSTM2(Time_decoder_outputs)
@@ -399,8 +399,8 @@ def composeSong(index):
     completesong['time'] = list(map(int,sample_song_Time))
     completesong['channel']=list(getNotes(sample_song_Channel))
     
-    mid = MidiFile(type=2)
-    mid.ticks_per_beat=120
+    mid = MidiFile(type=0)
+    mid.ticks_per_beat=60
     mid = MidiFile()
     track = MidiTrack()
     mid.tracks.append(track)    
@@ -418,4 +418,4 @@ def composeSong(index):
 model,AllModels,history = encoder_decoder()
 history.history.keys()
 plot_training(history)
-song=composeSong(45)    
+song=composeSong(55)    
