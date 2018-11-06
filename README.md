@@ -14,8 +14,9 @@ A 3 layered bidirectional encoder decoder LSTM is implemented as shown below.
 ### Evaluation
 
 ### Generated Samples
-sample1:
-<audio src="audio.mp3" controls preload></audio>
+
+<audio src="https://github.com/DeepsMoseli/LSTMGAN-for-melody-generation/gan1.mid" controls preload></audio>
+
 ### Conclusion
 
 ### References
