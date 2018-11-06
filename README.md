@@ -1,20 +1,25 @@
-## Welcome to GitHub Pages
+## Comparison of encoder-decoder LSTM and WGAN LSTM for Music Generation
 
-You can use the [editor on GitHub](https://github.com/DeepsMoseli/LSTMGAN-for-melody-generation/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Summary
+This work implements and compares adversarial and non-adversarial training of LSTM music composers on MIDI data. The resulting generated music samples are evaluated by voluntee human listeners, and their preferences are recorded to test whether adversarial training produces music samples that are more pleasing to listen to
 
-### Markdown
+### DATA
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Encoder-decoder LSTM
+
+### WGAN LSTM
+
+### Evaluation
+
+### Generated Samples
+
+### Conclusion
+
+### References
 
 ```markdown
 Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
 - Bulleted
 - List
 
